@@ -173,24 +173,38 @@ export function setSessionCookies(
   userId: string,
   accountType: 'BASIC_AGENCY' | 'MAX_AGENCY' | 'CREATOR' | 'CLIENT'
 ): void {
+  // Detect production environment (Railway, Vercel, or explicit production mode)
   const isProduction = !!(
     process.env.NODE_ENV === 'production' ||
     process.env.RAILWAY_ENVIRONMENT ||
+    process.env.VERCEL ||
     process.env.USE_HTTPS === 'true'
   );
 
-  const isLocalhost =
+  // Detect localhost development
+  const isLocalhost = !isProduction && (
     process.env.NODE_ENV === 'development' ||
     process.env.BETTER_AUTH_URL?.includes('localhost') ||
-    process.env.BETTER_AUTH_URL?.includes('127.0.0.1');
+    process.env.BETTER_AUTH_URL?.includes('127.0.0.1')
+  );
 
   const cookieOptions = {
     httpOnly: true,
+    // Always use secure in production, optional in development
     secure: isProduction,
-    ...(isLocalhost ? {} : { sameSite: 'none' as const }),
+    // Use 'none' for cross-domain in production, 'lax' for localhost
+    sameSite: (isProduction && !isLocalhost) ? 'none' as const : 'lax' as const,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path: '/'
+    path: '/',
+    // Don't set domain - let browser handle it for cross-origin cookies
   };
+
+  console.log('[AUTH-HELPER] Setting cookies with options:', {
+    isProduction,
+    isLocalhost,
+    secure: cookieOptions.secure,
+    sameSite: cookieOptions.sameSite
+  });
 
   // Set session cookie (for API authentication via better-auth middleware)
   res.cookie('better-auth.session_token', sessionId, cookieOptions);
