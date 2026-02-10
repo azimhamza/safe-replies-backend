@@ -95,7 +95,7 @@ export async function agencySignup(
     const cookieOptions = {
       httpOnly: true,
       secure: isSecure,
-      sameSite: 'lax' as const,
+      sameSite: (isSecure ? 'none' : 'lax') as 'none' | 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: '/',
       ...(cookieDomain && { domain: cookieDomain })
@@ -221,7 +221,7 @@ export async function creatorSignup(
     const cookieOptions = {
       httpOnly: true,
       secure: isSecure,
-      sameSite: 'lax' as const,
+      sameSite: (isSecure ? 'none' : 'lax') as 'none' | 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: '/',
       ...(cookieDomain && { domain: cookieDomain })
@@ -341,7 +341,7 @@ export async function login(
       const cookieOptions = {
         httpOnly: true,
         secure: isSecure,
-        sameSite: 'lax' as const,
+        sameSite: (isSecure ? 'none' : 'lax') as 'none' | 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: '/',
         ...(cookieDomain && { domain: cookieDomain })
@@ -428,7 +428,7 @@ export async function login(
       const cookieOptions = {
         httpOnly: true,
         secure: isSecure,
-        sameSite: 'lax' as const,
+        sameSite: (isSecure ? 'none' : 'lax') as 'none' | 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: '/',
         ...(cookieDomain && { domain: cookieDomain })

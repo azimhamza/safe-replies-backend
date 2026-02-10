@@ -30,7 +30,7 @@ Add these environment variables in Railway's dashboard:
 **Authentication:**
 - `BETTER_AUTH_SECRET` - 32+ character random string
 - `BETTER_AUTH_URL` - Your Railway backend URL (e.g., `https://your-app.railway.app`)
-- `COOKIE_DOMAIN` - Your Railway domain (e.g., `your-app.railway.app`)
+- `COOKIE_DOMAIN` - Leave empty/unset for cross-origin deployments (Railway + Vercel)
 
 **Email (Resend):**
 - `RESEND_API` - Your Resend API key
