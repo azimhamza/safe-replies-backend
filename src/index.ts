@@ -48,6 +48,10 @@ import jwt from "jsonwebtoken";
 const app = express();
 const port = process.env.PORT ?? 8080;
 
+// Trust proxy - required for Railway and other reverse proxies
+// This allows us to correctly identify client IPs from X-Forwarded-For header
+app.set('trust proxy', 1);
+
 // Middleware
 // Strict CORS configuration - only allow specific frontend origins
 const frontendOrigins = [
