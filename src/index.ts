@@ -67,13 +67,18 @@ app.use(
       // Allow requests with no origin (mobile apps, server-to-server)
       if (!origin) return callback(null, true);
 
-      // Only allow exact matches from frontendOrigins
+      // Check if origin is in the exact match list
       if (frontendOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn(`[CORS] Blocked origin: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
+        return callback(null, true);
       }
+
+      // Allow all Vercel preview deployments (*.vercel.app)
+      if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+
+      console.warn(`[CORS] Blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
     },
     credentials: true, // Required for secure cookies
     allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'],
