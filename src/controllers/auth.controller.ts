@@ -360,14 +360,24 @@ export async function login(
       console.log('🔐 [LOGIN] Session token created');
 
       // Set session cookie (JWT for API authentication)
-      const isSecure = process.env.USE_HTTPS === 'true';
       const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
-      // For localhost development, set domain to allow cookie sharing across ports
-      // For production, use the actual domain (e.g., .yourdomain.com)
+
+      // Detect if we're in localhost development
+      const isLocalhost = process.env.NODE_ENV === 'development' ||
+                          process.env.BETTER_AUTH_URL?.includes('localhost') ||
+                          process.env.BETTER_AUTH_URL?.includes('127.0.0.1');
+
+      // For production (Railway, Vercel, etc.), always use secure cookies
+      const isProduction = !!(process.env.NODE_ENV === 'production' ||
+                              process.env.RAILWAY_ENVIRONMENT ||
+                              process.env.USE_HTTPS === 'true');
+
       const cookieOptions = {
         httpOnly: true,
-        secure: isSecure,
-        sameSite: (isSecure ? 'none' : 'lax') as 'none' | 'lax',
+        secure: isProduction,
+        // For localhost, don't set sameSite to allow cross-origin cookies
+        // For production, use 'none' to allow cross-origin requests
+        ...(isLocalhost ? {} : { sameSite: 'none' as const }),
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: '/',
         ...(cookieDomain && { domain: cookieDomain })
@@ -447,14 +457,24 @@ export async function login(
       console.log('🔐 [LOGIN] Session token created for client');
 
       // Set session cookie (JWT for API authentication)
-      const isSecure = process.env.USE_HTTPS === 'true';
       const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
-      // For localhost development, set domain to allow cookie sharing across ports
-      // For production, use the actual domain (e.g., .yourdomain.com)
+
+      // Detect if we're in localhost development
+      const isLocalhost = process.env.NODE_ENV === 'development' ||
+                          process.env.BETTER_AUTH_URL?.includes('localhost') ||
+                          process.env.BETTER_AUTH_URL?.includes('127.0.0.1');
+
+      // For production (Railway, Vercel, etc.), always use secure cookies
+      const isProduction = !!(process.env.NODE_ENV === 'production' ||
+                              process.env.RAILWAY_ENVIRONMENT ||
+                              process.env.USE_HTTPS === 'true');
+
       const cookieOptions = {
         httpOnly: true,
-        secure: isSecure,
-        sameSite: (isSecure ? 'none' : 'lax') as 'none' | 'lax',
+        secure: isProduction,
+        // For localhost, don't set sameSite to allow cross-origin cookies
+        // For production, use 'none' to allow cross-origin requests
+        ...(isLocalhost ? {} : { sameSite: 'none' as const }),
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: '/',
         ...(cookieDomain && { domain: cookieDomain })
