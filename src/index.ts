@@ -8,7 +8,15 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
+// Load .env.local from project root
+// When running with tsx: src/index.ts -> go up one level
+// When running compiled: dist/src/index.js -> go up two levels
+const envPath = __dirname.includes('/dist/')
+  ? path.resolve(__dirname, '../../.env.local')
+  : path.resolve(__dirname, '../.env.local');
+
+console.log('[ENV] Loading environment from:', envPath);
+dotenv.config({ path: envPath });
 
 import { startPollCron } from "./cron/pollCron";
 import { startDeepSyncCron } from "./cron/deepSyncCron";
@@ -17,13 +25,14 @@ import express from "express";
 import https from "https";
 import fs from "fs";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import multer from "multer";
 import { auth } from "./config/auth.config";
 import { toNodeHandler } from "better-auth/node";
-import { authMiddleware } from "./middleware/auth.middleware";
+import { betterAuthMiddleware as authMiddleware, BetterAuthRequest } from "./middleware/better-auth.middleware";
 import { delegationMiddleware, DelegationRequest } from "./middleware/delegation.middleware";
 import { authRateLimiter, apiRateLimiter, webhookRateLimiter, syncStatusRateLimiter } from "./middleware/rate-limit.middleware";
-import * as authController from "./controllers/auth.controller";
+import * as authController from "./controllers/auth.controller.better-auth";
 import * as webhookController from "./controllers/webhook.controller";
 import * as clientsController from "./controllers/clients.controller";
 import * as agencyController from "./controllers/agency.controller";
@@ -41,9 +50,7 @@ import { underAttackController } from "./controllers/under-attack.controller";
 import syncStatusController from "./controllers/sync-status.controller";
 import initialSyncProgressController from "./controllers/initial-sync-progress.controller";
 import * as onboardingController from "./controllers/onboarding.controller";
-import { AuthRequest } from "./middleware/auth.middleware";
 import { autumnHandler } from "autumn-js/express";
-import jwt from "jsonwebtoken";
 
 const app = express();
 const port = process.env.PORT ?? 8080;
@@ -91,6 +98,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Parse cookies for session validation
 
 // Multer configuration for file uploads
 const upload = multer({
@@ -128,48 +136,68 @@ const logoUpload = multer({
 });
 
 // Autumn billing handler
+// Validate AUTUMN_SECRET_KEY is present
+if (!process.env.AUTUMN_SECRET_KEY) {
+  console.error('[AUTUMN] ERROR: AUTUMN_SECRET_KEY environment variable is not set!');
+  console.error('[AUTUMN] Autumn billing routes will not work without this key.');
+  console.error('[AUTUMN] Please check that .env.local file exists and contains AUTUMN_SECRET_KEY');
+  throw new Error('AUTUMN_SECRET_KEY environment variable is required');
+}
+
+const AUTUMN_SECRET_KEY: string = process.env.AUTUMN_SECRET_KEY;
+console.log('[AUTUMN] Initializing handler with key:', AUTUMN_SECRET_KEY ? 'Present (length: ' + AUTUMN_SECRET_KEY.length + ')' : 'MISSING');
+
 app.use(
   "/api/autumn",
   autumnHandler({
+    secretKey: AUTUMN_SECRET_KEY,
     identify: async (req) => {
-      const cookieName = "better-auth.session_token";
-      const cookies = req.headers.cookie?.split(";").reduce(
-        (acc: Record<string, string>, cookie: string) => {
-          const [key, value] = cookie.trim().split("=");
-          if (key && value) {
-            acc[key] = value;
-          }
-          return acc;
-        },
-        {}
-      );
-
-      const token = cookies?.[cookieName];
-      if (!token) {
+      const sessionToken = req.cookies?.['better-auth.session_token'];
+      if (!sessionToken) {
         return { customerId: "" };
       }
 
       try {
-        const secret = process.env.BETTER_AUTH_SECRET || "fallback-secret-key";
-        const decoded = jwt.verify(token, secret) as {
-          userId: string;
-          email: string;
-          accountType: string;
-        };
+        // Import db and session at the top level if not already imported
+        const { db } = await import("./db/index.js");
+        const { session } = await import("./db/better-auth-schema.js");
+        const { users } = await import("./db/schema.js");
+        const { eq } = await import("drizzle-orm");
 
-        // Only create Autumn customers for agencies and creators, not clients
-        if (decoded.accountType === "CLIENT") {
+        // Look up session in database
+        const sessionData = await db.query.session.findFirst({
+          where: eq(session.id, sessionToken)
+        });
+
+        if (!sessionData) {
+          return { customerId: "" };
+        }
+
+        // Check if session has expired
+        if (new Date() > sessionData.expiresAt) {
+          return { customerId: "" };
+        }
+
+        // Get user data from users table
+        // Note: Clients are in a separate table and don't have Autumn billing
+        const user = await db.query.users.findFirst({
+          where: eq(users.id, sessionData.userId)
+        });
+
+        if (!user) {
+          // User not found in users table (might be a client)
           return { customerId: "" };
         }
 
         return {
-          customerId: decoded.userId,
+          customerId: user.id,
           customerData: {
-            name: decoded.email,
-            email: decoded.email,
+            name: user.name || user.email,
+            email: user.email,
           },
         };
-      } catch {
+      } catch (error) {
+        console.error('[AUTUMN] Error identifying customer:', error);
         return { customerId: "" };
       }
     },
@@ -263,7 +291,7 @@ app.use("/api/*", (req, res, next) => {
 
   // Apply authentication middleware for protected routes
   console.log(`[AUTH] Applying auth middleware for: ${req.method} ${fullPath}`);
-  return authMiddleware(req as AuthRequest, res, next);
+  return authMiddleware(req as BetterAuthRequest, res, next);
 });
 
 // Image proxy (public - allowlisted Instagram CDN URLs only)
@@ -379,7 +407,7 @@ app.get(
   syncStatusRateLimiter,
   authMiddleware,
   delegationMiddleware,
-  (req, res) => syncStatusController.getSyncStatus(req as any, res),
+  (req, res) => syncStatusController.getSyncStatus(req as DelegationRequest, res),
 );
 app.get(
   "/api/sync-status/initial-progress",

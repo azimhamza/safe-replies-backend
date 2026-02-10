@@ -14,6 +14,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from './schema';
 import * as relations from './relations';
+import * as betterAuthSchema from './better-auth-schema';
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL environment variable is not set');
@@ -47,6 +48,6 @@ pool.query('SELECT NOW()')
     console.error('DATABASE_URL:', process.env.DATABASE_URL ? 'Set (hidden)' : 'NOT SET');
   });
 
-export const db = drizzle(pool, { schema: { ...schema, ...relations } });
+export const db = drizzle(pool, { schema: { ...schema, ...relations, ...betterAuthSchema } });
 
 export type Database = typeof db;

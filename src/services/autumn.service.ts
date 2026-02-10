@@ -4,7 +4,7 @@ import { clients } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 export const autumn = new Autumn({
-  secretKey: process.env.AUTUMN_KEY,
+  secretKey: process.env.AUTUMN_SECRET_KEY,
 });
 
 /**
