@@ -52,8 +52,11 @@ const port = process.env.PORT ?? 8080;
 // Strict CORS configuration - only allow specific frontend origins
 const frontendOrigins = [
   process.env.FRONTEND_URL,
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
   'http://localhost:3000',
-  'https://localhost:3000'
+  'https://localhost:3000',
+  // Add your specific Vercel deployment URL
+  'https://safe-replies-frontend-go8h-380dnxuc5-azim-hamzas-projects.vercel.app'
 ].filter(Boolean);
 
 const useHttps = process.env.USE_HTTPS !== "false"; // Default to true
