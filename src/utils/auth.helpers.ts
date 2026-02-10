@@ -217,4 +217,15 @@ export function setSessionCookies(
     ...cookieOptions,
     httpOnly: false // Frontend needs to read this
   });
+
+  // For Chrome 118+, manually set cookies with Partitioned attribute for cross-site support
+  // Express cookie() doesn't support Partitioned yet, so we set it manually via Set-Cookie header
+  if (isProduction && !isLocalhost) {
+    const sessionCookieStr = `better-auth.session_token=${sessionId}; Max-Age=604800; Path=/; HttpOnly; Secure; SameSite=None; Partitioned`;
+    const userValue = JSON.stringify({ userId, accountType });
+    const userCookieStr = `user=${encodeURIComponent(userValue)}; Max-Age=604800; Path=/; Secure; SameSite=None; Partitioned`;
+
+    // Replace the Set-Cookie headers to include Partitioned attribute
+    res.setHeader('Set-Cookie', [sessionCookieStr, userCookieStr]);
+  }
 }
