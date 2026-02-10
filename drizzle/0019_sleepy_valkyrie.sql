@@ -1,0 +1,1 @@
+ALTER TABLE "facebook_pages" ADD COLUMN "last_sync_at" timestamp;

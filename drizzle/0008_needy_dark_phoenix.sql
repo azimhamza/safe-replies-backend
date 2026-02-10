@@ -1,0 +1,2 @@
+ALTER TABLE "custom_filters" ADD COLUMN "instagram_account_id" uuid;--> statement-breakpoint
+ALTER TABLE "custom_filters" ADD CONSTRAINT "custom_filters_instagram_account_id_instagram_accounts_id_fk" FOREIGN KEY ("instagram_account_id") REFERENCES "public"."instagram_accounts"("id") ON DELETE no action ON UPDATE no action;

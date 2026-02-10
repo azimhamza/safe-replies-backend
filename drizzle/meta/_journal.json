@@ -1,0 +1,146 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1706000000000,
+      "tag": "0000_tidy_leopardon",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1706100000000,
+      "tag": "0001_worthless_sentinels",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1737244800000,
+      "tag": "0002_add_comment_hide_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1769044520691,
+      "tag": "0003_red_patch",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1769120572240,
+      "tag": "0004_tough_vampiro",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1769120838894,
+      "tag": "0005_lethal_chronomancer",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1769148392993,
+      "tag": "0006_wild_falcon",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1769148513779,
+      "tag": "0007_mean_victor_mancha",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1769149371470,
+      "tag": "0008_needy_dark_phoenix",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1769200000000,
+      "tag": "0009_add_pgvector_support",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1769315392069,
+      "tag": "0010_violet_exiles",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1769445568106,
+      "tag": "0011_hesitant_dragon_lord",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1769460029754,
+      "tag": "0012_add_auto_hide_delete_to_suspicious_accounts",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1769668013024,
+      "tag": "0013_quiet_ben_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1770148574473,
+      "tag": "0014_fuzzy_khan",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1770341342679,
+      "tag": "0015_elite_bushwacker",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1770629706190,
+      "tag": "0016_regular_martin_li",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1770630347540,
+      "tag": "0017_flowery_ogun",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1770678590774,
+      "tag": "0018_add_userId_to_watchlist",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1770736967657,
+      "tag": "0019_sleepy_valkyrie",
+      "breakpoints": true
+    }
+  ]
+}
