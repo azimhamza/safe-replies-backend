@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  query-string: 8.2.0
+
 importers:
 
   .:
@@ -2832,9 +2835,9 @@ packages:
     resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
     engines: {node: '>=0.6'}
 
-  query-string@9.3.1:
-    resolution: {integrity: sha512-5fBfMOcDi5SA9qj5jZhWAcTtDfKF5WFdd2uD9nVNlbxVv1baq65aALy6qofpNEGELHvisjjasxQp7BlM9gvMzw==}
-    engines: {node: '>=18'}
+  query-string@8.2.0:
+    resolution: {integrity: sha512-tUZIw8J0CawM5wyGBiDOAp7ObdRQh4uBor/fUR9ZjmbZVvw95OD9If4w3MQxr99rg0DJZ/9CIORcpEqU5hQG7g==}
+    engines: {node: '>=14.16'}
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -4920,7 +4923,7 @@ snapshots:
 
   autumn-js@0.1.75(better-auth@1.4.15(drizzle-kit@0.31.8)(drizzle-orm@0.41.0(@types/pg@8.16.0)(kysely@0.28.9)(pg@8.17.1))(pg@8.17.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.8(zod@3.25.76))(react@19.2.4):
     dependencies:
-      query-string: 9.3.1
+      query-string: 8.2.0
       rou3: 0.6.3
       swr: 2.4.0(react@19.2.4)
       zod: 4.3.5
@@ -6172,7 +6175,7 @@ snapshots:
     dependencies:
       side-channel: 1.1.0
 
-  query-string@9.3.1:
+  query-string@8.2.0:
     dependencies:
       decode-uri-component: 0.4.1
       filter-obj: 5.1.0
