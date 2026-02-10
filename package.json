@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "test:moderation": "tsx create-test-comments.ts && tsx test-comment-moderation.ts",
     "test:webhooks": "tsx test-webhook-simulation.ts",
     "test:suspicious-features": "tsx test-suspicious-account-features.ts",
