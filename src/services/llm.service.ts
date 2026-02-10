@@ -1,8 +1,14 @@
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { LLMClassificationResult, CommentCategory, IdentifierType, ExtractedIdentifier, EmbeddingSimilarityContext } from '../types';
 import { CustomFilter } from '../db/schema';
+
+// ES Module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load environment variables before creating Groq client
 dotenv.config({ path: path.resolve(__dirname, '../../.env.local') });

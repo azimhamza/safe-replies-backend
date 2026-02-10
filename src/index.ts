@@ -1,6 +1,13 @@
 // Load environment variables FIRST before any other imports
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+// ES Module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
 import { startPollCron } from "./cron/pollCron";

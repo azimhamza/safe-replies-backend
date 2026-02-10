@@ -1,6 +1,13 @@
 // Load environment variables first
 import dotenv from 'dotenv';
 import { resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// ES Module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 dotenv.config({ path: resolve(__dirname, '../../.env.local') });
 
 import { drizzle } from 'drizzle-orm/node-postgres';
