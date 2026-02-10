@@ -29,6 +29,8 @@ export async function authMiddleware(
   try {
     // Debug logging - show actual cookies
     console.log('[AUTH] Applying auth middleware for:', req.method, req.path);
+    console.log('[AUTH] Origin:', req.headers.origin);
+    console.log('[AUTH] Cookie header:', req.headers.cookie);
 
     // Extract token from cookies
     const cookieName = 'better-auth.session_token';
@@ -45,6 +47,7 @@ export async function authMiddleware(
     if (!token) {
       console.log('[AUTH] No session token found in cookies');
       console.log('[AUTH] Available cookies:', Object.keys(cookies || {}));
+      console.log('[AUTH] Full cookies object:', cookies);
       res.status(401).json({ success: false, error: 'Unauthorized - No session token' });
       return;
     }

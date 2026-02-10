@@ -383,6 +383,18 @@ export async function login(
         ...(cookieDomain && { domain: cookieDomain })
       };
 
+      console.log('🔐 [LOGIN] Cookie config:', {
+        isLocalhost,
+        isProduction,
+        cookieOptions,
+        env: {
+          NODE_ENV: process.env.NODE_ENV,
+          RAILWAY_ENVIRONMENT: !!process.env.RAILWAY_ENVIRONMENT,
+          USE_HTTPS: process.env.USE_HTTPS,
+          BETTER_AUTH_URL: process.env.BETTER_AUTH_URL
+        }
+      });
+
       res.cookie('better-auth.session_token', token, cookieOptions);
 
       // Set user cookie (for frontend middleware routing)
